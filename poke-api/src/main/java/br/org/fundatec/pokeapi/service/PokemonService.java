@@ -23,4 +23,13 @@ public class PokemonService {
         return pokemonRepository.findByNome(nome);
     }
 
+    public void adicionar(Pokemon pokemon) {
+        pokemonRepository.save(pokemon);
+    }
+
+    public Pokemon removerPorId(Long id) {
+        Pokemon pokemonParaRemover = pokemonRepository.findById(id).get();
+        pokemonRepository.deleteById(id);
+        return pokemonParaRemover;
+    }
 }
