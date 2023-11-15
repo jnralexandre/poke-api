@@ -1,5 +1,7 @@
 package br.org.fundatec.pokeapi.controller;
 
+import br.org.fundatec.pokeapi.integration.response.PokemonResponse;
+import br.org.fundatec.pokeapi.integration.service.PokemonIntegrationService;
 import br.org.fundatec.pokeapi.model.Pokemon;
 import br.org.fundatec.pokeapi.service.PokemonService;
 import org.springframework.http.HttpStatus;
@@ -12,9 +14,11 @@ import java.util.List;
 @RequestMapping("api/v1/pokemons")
 public class PokemonController {
     private PokemonService pokemonService;
+    private PokemonIntegrationService pokemonIntegrationService;
 
-    public PokemonController(PokemonService pokemonService) {
+    public PokemonController(PokemonService pokemonService, PokemonIntegrationService pokemonIntegrationService) {
         this.pokemonService = pokemonService;
+        this.pokemonIntegrationService = pokemonIntegrationService;
     }
 
     @GetMapping
@@ -53,5 +57,10 @@ public class PokemonController {
         return ResponseEntity.ok(pokemonAlterado);
     }
 
+    @GetMapping("/api-externa/{nome}")
+    public ResponseEntity<PokemonResponse> buscarPokemonServicoExterno(@PathVariable("nome") String nome) {
+        PokemonResponse pokemonBuscadoServicoExterno = this.pokemonIntegrationService.buscarPokemonNoServicoExternoPeloNome(nome);
+        return ResponseEntity.ok(pokemonBuscadoServicoExterno);
+    }
 
 }
