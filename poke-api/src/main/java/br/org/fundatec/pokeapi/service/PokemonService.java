@@ -32,4 +32,19 @@ public class PokemonService {
         pokemonRepository.deleteById(id);
         return pokemonParaRemover;
     }
+
+    public Pokemon removerPorNome(String nome) {
+        Pokemon pokemonParaRemover = pokemonRepository.findByNome(nome);
+        pokemonRepository.delete(pokemonParaRemover);
+        return pokemonParaRemover;
+    }
+
+    public Pokemon alterarPokemonPorId(Long id, Pokemon pokemon) {
+        Pokemon pokemonParaAlterar = pokemonRepository.findById(id).get();
+        pokemonParaAlterar.setNome(pokemon.getNome());
+        pokemonParaAlterar.setTipo(pokemon.getTipo());
+        pokemonRepository.save(pokemonParaAlterar);
+        return pokemonParaAlterar;
+    }
+
 }

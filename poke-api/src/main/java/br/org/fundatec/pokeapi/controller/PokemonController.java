@@ -39,4 +39,19 @@ public class PokemonController {
         pokemonService.removerPorId(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @DeleteMapping("/nome/{nome}")
+    public ResponseEntity<Pokemon> removerPorNome(@PathVariable("nome") String nome) {
+        pokemonService.removerPorNome(nome);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Pokemon> alterarPokemonPorId(@PathVariable("id") Long id,
+                                                        @RequestBody Pokemon pokemon) {
+        Pokemon pokemonAlterado = this.pokemonService.alterarPokemonPorId(id, pokemon);
+        return ResponseEntity.ok(pokemonAlterado);
+    }
+
+
 }
