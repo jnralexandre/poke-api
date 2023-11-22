@@ -6,6 +6,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Locale;
+
 @Service
 public class PokemonIntegrationService {
 
@@ -20,6 +22,13 @@ public class PokemonIntegrationService {
     public PokemonResponse buscarPokemonNoServicoExternoPeloNome(String nome) {
         String urlCompleta = this.uri + "/" + nome;
         PokemonResponse pokemonExterno = this.restTemplate.getForObject(urlCompleta, PokemonResponse.class);
+
+        String nomePokemonAPIExterna = pokemonExterno.getName();
+        String nomeComInicialMaiuscula =
+                nomePokemonAPIExterna.substring(0, 1).toUpperCase() +
+                        nomePokemonAPIExterna.substring(1);
+        pokemonExterno.setName(nomeComInicialMaiuscula);
+
         return pokemonExterno;
     }
 }
