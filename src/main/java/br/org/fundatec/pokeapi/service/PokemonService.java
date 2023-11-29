@@ -1,8 +1,12 @@
 package br.org.fundatec.pokeapi.service;
 
 import br.org.fundatec.pokeapi.model.Pokemon;
+import br.org.fundatec.pokeapi.model.dto.PokemonRequestDTO;
+import br.org.fundatec.pokeapi.model.dto.converter.PokemonConverter;
 import br.org.fundatec.pokeapi.repository.PokemonRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,8 +27,20 @@ public class PokemonService {
         return pokemonRepository.findByNome(nome);
     }
 
-    public void adicionar(Pokemon pokemon) {
-        pokemonRepository.save(pokemon);
+    public void adicionar(PokemonRequestDTO pokemonRequestDTO) {
+        String nomePokemonASerAdicionado = pokemonRequestDTO.getNome();
+        Pokemon pokemonExistente = buscarPokemonPorNome(nomePokemonASerAdicionado);
+
+        // Verificar se Pokémon já existe no Banco de Dados.
+        if (pokemonExistente != null) {
+            // Retornar HTTP Status Code: 400
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Não é possível adicionar um Pokémon repetido." + " O Pokémon " + nomePokemonASerAdicionado + " já existe no Banco de Dados."
+            );
+        } else {
+            Pokemon pokemonEntity = PokemonConverter.converterParaEntidade(pokemonRequestDTO);
+            pokemonRepository.save(pokemonEntity);
+        }
     }
 
     public Pokemon removerPorId(Long id) {
@@ -35,8 +51,15 @@ public class PokemonService {
 
     public Pokemon removerPorNome(String nome) {
         Pokemon pokemonParaRemover = pokemonRepository.findByNome(nome);
-        pokemonRepository.delete(pokemonParaRemover);
-        return pokemonParaRemover;
+
+        if (pokemonParaRemover == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Não é possível remover um Pokémon inexistente." + " O Pokémon " + nome + " Não existe no Banco de Dados."
+            );
+        } else {
+            pokemonRepository.delete(pokemonParaRemover);
+            return pokemonParaRemover;
+        }
     }
 
     public Pokemon alterarPokemonPorId(Long id, Pokemon pokemon) {
@@ -47,4 +70,15 @@ public class PokemonService {
         return pokemonParaAlterar;
     }
 
+    public Integer buscarTodosPokemonEQuantidade() {
+        Integer quantidadeDePokemonsNoBanco = buscarTodos().size();
+
+        if (quantidadeDePokemonsNoBanco == 0) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Não existe nenhum Pokémon no Banco de Dados."
+            );
+        } else {
+            return quantidadeDePokemonsNoBanco;
+        }
+    }
 }
