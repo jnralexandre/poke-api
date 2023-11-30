@@ -81,4 +81,14 @@ public class PokemonService {
             return quantidadeDePokemonsNoBanco;
         }
     }
+
+    public List<Pokemon> buscarPokemonPorTipo(String tipo) {
+        if (pokemonRepository.findByTipo(tipo) == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Não existe um Pokémon deste tipo no Banco de Dados." + tipo
+            );
+        } else {
+            return pokemonRepository.findByTipo(tipo);
+        }
+    }
 }

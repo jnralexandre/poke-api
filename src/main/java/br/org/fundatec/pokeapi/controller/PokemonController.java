@@ -27,7 +27,7 @@ public class PokemonController {
         return ResponseEntity.ok(this.pokemonService.buscarTodos());
     }
 
-    @GetMapping("/{nome}")
+    @GetMapping("/nome/{nome}")
     public ResponseEntity<Pokemon> buscarPokemonPorNome(@PathVariable("nome") String nome) {
         Pokemon PokemonBuscado = this.pokemonService.buscarPokemonPorNome(nome);
         return ResponseEntity.ok(PokemonBuscado);
@@ -68,4 +68,8 @@ public class PokemonController {
         return ResponseEntity.ok(this.pokemonService.buscarTodosPokemonEQuantidade());
     }
 
+    @GetMapping("/tipo/{tipo}")
+    public ResponseEntity <List<Pokemon>> buscarPokemonPorTipo(@PathVariable("tipo") String tipo) {
+        return ResponseEntity.ok(this.pokemonService.buscarPokemonPorTipo(tipo));
+    }
 }
